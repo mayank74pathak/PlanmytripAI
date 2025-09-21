@@ -2,9 +2,6 @@ import streamlit as st
 import requests
 import datetime
 
-# from exception.exceptions import TradingBotException
-import sys
-
 BASE_URL = "https://planmytripai-1.onrender.com/query"  # Backend endpoint
 
 st.set_page_config(
@@ -30,18 +27,19 @@ with st.form(key="query_form", clear_on_submit=True):
 
 if submit_button and user_input.strip():
     try:
-        # # Show user message
-        # Show thinking spinner while backend processes
         with st.spinner("Bot is thinking..."):
             payload = {"question": user_input}
             response = requests.post(BASE_URL, json=payload)
 
         if response.status_code == 200:
+            # debug log
+            st.write("✅ Raw backend response:", response.json())
+
             answer = response.json().get("answer", "No answer returned.")
             markdown_content = f"""# 🌍 AI Travel Plan
 
-            # **Generated:** {datetime.datetime.now().strftime('%Y-%m-%d at %H:%M')}  
-            # **Created by:** Atriyo's Travel Agent
+            **Generated:** {datetime.datetime.now().strftime('%Y-%m-%d at %H:%M')}  
+            **Created by:** Atriyo's Travel Agent  
 
             ---
 
@@ -53,7 +51,7 @@ if submit_button and user_input.strip():
             """
             st.markdown(markdown_content)
         else:
-            st.error(" Bot failed to respond: " + response.text)
+            st.error(f"❌ Bot failed to respond. Status: {response.status_code}, Details: {response.text}")
 
     except Exception as e:
-     st.error(f"The response failed due to {e}")
+        st.error(f"⚠️ The response failed due to: {str(e)}")
