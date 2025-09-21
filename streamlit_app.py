@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import datetime
 
-BASE_URL = "https://planmytripai-1.onrender.com/query"  # Backend endpoint
+BASE_URL = "https://planmytripai-1.onrender.com"  # Backend endpoint
 
 st.set_page_config(
     page_title="🌍 Travel Planner Agentic Application",
@@ -29,7 +29,8 @@ if submit_button and user_input.strip():
     try:
         with st.spinner("Bot is thinking..."):
             payload = {"question": user_input}
-            response = requests.post(BASE_URL, json=payload)
+            response = requests.post(f"{BASE_URL}/query", json=payload)
+
 
         if response.status_code == 200:
             # debug log
